@@ -17,7 +17,7 @@ pipeline {
                 // Run Maven on a Unix agent.
         stage('Build') {
             steps {
-                sh "mvn -Dmaven.test.failure.ignore=true -f discovery-server clean package"
+                bat "mvn -Dmaven.test.failure.ignore=true -f discovery-server clean package"
             }
             post {
                 // If Maven was able to run the tests, even if some of the test
