@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        label 'windows'
-    }
+    agent any
     tools {
         // Install the Maven version configured as "M3" and add it to the path.
         maven "MVN3"
@@ -17,7 +15,7 @@ pipeline {
                 // Run Maven on a Unix agent.
         stage('Build') {
             steps {
-                bat "mvn -Dmaven.test.failure.ignore=true -f discovery-server clean package"
+                sh "mvn -Dmaven.test.failure.ignore=true -f discovery-server clean package"
             }
             post {
                 // If Maven was able to run the tests, even if some of the test
@@ -28,7 +26,23 @@ pipeline {
                 }
             }
         }
+         stage('Email') {
+            steps{
+                script {
+                    cest = TimeZone.getTimeZone("CEST")
+                    def cest = new Date()
+                    println(cest) 
+                    def mailRecipients = 'temail12wq@gmail.com'
+                    def jobName = currentBuild.fullDisplayName
+                    env.Name = Name
+                    env.cest = cest
+                    emailext body: '''${SCRIPT, template="email-html.template"}''',
+                    mimeType: 'text/html',
+                    subject: "[Jenkins] ${jobName}",
+                    to: "${mailRecipients}",
+                    replyTo: "${mailRecipients}"
+                           }
+                        }
+                    }
     }
 }
-// //
-//test
